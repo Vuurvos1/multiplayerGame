@@ -1,18 +1,19 @@
 {
-  "name": "multiplayer-game",
+  "name": "drawing-game",
   "version": "1.0.0",
+  "description": "Multiplayer drawing game using web sockets",
+  "main": "server.js",
   "engines": {
     "node": "12.16.3",
     "npm": "6.14.4"
   },
-  "description": "This is an example for how to use sockets",
-  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx npm-run-all --parallel watch-sass startn",
-    "startn": "npx nodemon server.js",
-    "build-sass": "npx node-sass -o public/css assets/scss/main.scss",
-    "watch-sass": "npx node-sass -o public/css assets/scss/main.scss -w"
+    "nodeDev": "npx nodemon server.js",
+    "build": "rollup -c",
+    "svelteDev": "rollup -c -w",
+    "start": "sirv public",
+    "dev": "npx npm-run-all --parallel svelteDev nodeDev"
   },
   "homepage": "https://github.com/Vuurvos1/drawingGame#multiplayer-gameing",
   "repository": {
@@ -30,10 +31,20 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "express": "^4.13.4",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "sirv-cli": "^1.0.0",
+    "svelte-preprocess": "^4.6.1"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.0",
     "node-sass": "^4.14.1",
-    "npm-run-all": "^4.1.5"
+    "npm-run-all": "^4.1.5",
+    "rollup": "^2.37.1",
+    "rollup-plugin-css-only": "^3.1.0",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-svelte": "^7.0.0",
+    "rollup-plugin-terser": "^7.0.0",
+    "svelte": "^3.0.0"
   }
 }

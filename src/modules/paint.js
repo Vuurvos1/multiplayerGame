@@ -1,5 +1,9 @@
-import getMouseCoordsOnCanvas from './canvasUtility.js';
-import Fill from './canvasFill.js';
+import { get } from 'svelte/store';
+import { socket } from './../store';
+import { q, qa } from './helpers';
+
+import getMouseCoordsOnCanvas from './canvasUtility';
+import Fill from './canvasFill';
 
 // limit imput rate to requestAnimationFrame (should be same as screen refresh rate)
 // might want to lock this to ~90 inputs per second
@@ -13,8 +17,8 @@ function animate() {
 window.requestAnimationFrame(animate);
 
 export default class Paint {
-  constructor(canvasId, socket) {
-    this.canvas = document.querySelector(canvasId);
+  constructor(canvasId) {
+    this.canvas = q(canvasId);
     this.ctx = canvas.getContext('2d');
 
     this.undoStack = [];
@@ -29,16 +33,11 @@ export default class Paint {
     // _ to prevent conflict
     this._lineWidth = lineWidth;
     this.ctx.lineWidth = this._lineWidth;
-
-    socket.emit('changeLineWidth', lineWidth);
   }
 
   set selectColor(col) {
     this.color = col;
     this.ctx.strokeStyle = this.color;
-
-    // send event to server
-    socket.emit('changeColor', col);
   }
 
   init() {
@@ -69,7 +68,7 @@ export default class Paint {
     this.startPos = getMouseCoordsOnCanvas(this.canvas, e);
 
     // save array to other clients
-    socket.emit('saveMove', true);
+    get(socket).emit('saveMove', true);
 
     let data = {};
     switch (this.tool) {
@@ -81,12 +80,14 @@ export default class Paint {
         data = {
           x: this.startPos.x,
           y: this.startPos.y,
+          lineWidth: this.lineWidth,
+          color: this.color,
         };
 
-        socket.emit('startStoke', data);
+        get(socket).emit('startStoke', data);
         break;
 
-      case 'bucket':
+      case 'fill':
         new Fill(this.canvas, this.startPos, this.color);
 
         // send event to server
@@ -95,10 +96,10 @@ export default class Paint {
           col: this.color,
         };
 
-        socket.emit('floodFill', data);
+        get(socket).emit('floodFill', data);
         break;
 
-      case 'eraser':
+      case 'erase':
         this.ctx.clearRect(
           this.startPos.x,
           this.startPos.y,
@@ -112,7 +113,7 @@ export default class Paint {
           y: this.currentPos.y,
         };
 
-        socket.emit('erase', data);
+        get(socket).emit('erase', data);
         break;
     }
   }
@@ -135,9 +136,9 @@ export default class Paint {
           y: this.currentPos.y,
         };
 
-        socket.emit('drawStroke', data);
+        get(socket).emit('drawStroke', data);
         break;
-      case 'eraser':
+      case 'erase':
         this.ctx.clearRect(
           this.currentPos.x,
           this.currentPos.y,
@@ -149,9 +150,11 @@ export default class Paint {
         data = {
           x: this.currentPos.x,
           y: this.currentPos.y,
+          lineWidth: this.lineWidth,
+          color: this.color,
         };
 
-        socket.emit('erase', data);
+        get(socket).emit('erase', data);
         break;
     }
   }

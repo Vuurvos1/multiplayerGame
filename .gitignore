@@ -1,3 +1,4 @@
 node_modules/
 public/settings.js
 .env
+.DS_Store

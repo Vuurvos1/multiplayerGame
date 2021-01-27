@@ -26,8 +26,9 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', (room) => {
     const data = {
       id: socket.id,
-      imageId: ~~(Math.random() * 7),
+      image: ~~(Math.random() * 7),
       username: ~~(Math.random() * 7),
+      score: 0,
     };
 
     roomName = room ? `${room}` : `${socket.id}`;
@@ -57,7 +58,8 @@ io.on('connection', (socket) => {
 
     // update all clients user list
     const temp = Object.values(io.sockets.adapter.rooms[roomName].users);
-    io.in(roomName).emit('userJoin', temp);
+    // io.in(roomName).emit('userJoin', temp);
+    io.in(roomName).emit('userJoin', data);
 
     // request canvas for new users
     if (socket.id != roomName) {
@@ -71,6 +73,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('message', (data) => {
+    socket.broadcast.emit('message', data);
+
     // check word logic
     if (
       data.message.toLowerCase() ===
