@@ -1,19 +1,29 @@
 <script>
-  import { gameState } from './../store';
+  import { gameState, username } from './../store';
 
-  function profileSubmit(e) {
+  let name = '';
+
+  function test(e) {
     e.preventDefault();
     $gameState = 'lobby';
+    // trim this value if needed
+    $username = name.value;
   }
 </script>
 
+<style lang="scss">
+  p {
+    color: #fff;
+  }
+</style>
+
 <p>Profile</p>
 
-<form>
+<form on:submit={test}>
   <label>
-    <input type="text" />
+    <input type="text" bind:this={name} />
     <input type="number" min="0" max="6" value="0" />
   </label>
 
-  <button type="submit" on:click={profileSubmit}>submit</button>
+  <button type="submit">submit</button>
 </form>

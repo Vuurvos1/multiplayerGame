@@ -77,8 +77,9 @@ io.on('connection', (socket) => {
 
     // check word logic
     if (
-      data.message.toLowerCase() ===
-      io.sockets.adapter.rooms[roomName].word.toLowerCase()
+      true
+      // data.message.toLowerCase() ===
+      // io.sockets.adapter.rooms[roomName].word.toLowerCase()
     ) {
       // send to other clients
       // close state

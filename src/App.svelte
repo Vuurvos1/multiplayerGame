@@ -42,9 +42,21 @@
 </script>
 
 <style>
+  :global(*) {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    font-family: sans-serif;
+  }
+
+  :global(body) {
+    background-color: #181818;
+  }
+
   h1 {
     font-size: 3rem;
-    color: #000000;
+    color: #ffffff;
   }
 
   :global(button) {
@@ -59,6 +71,7 @@
 </svelte:head>
 
 <h1>Game</h1>
+
 {#if $gameState == 'profile' || $gameState == ''}
   <!-- character creator -->
   <Profile />
